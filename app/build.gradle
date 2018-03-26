@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.reone.bagua"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        dataBinding {
+            enabled true
+        }
+    }
+    buildTypes {
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                def snakeVersion = defaultConfig.versionName.replace(".", "_")
+                def suffix = variant.buildType.name == 'release' ? "" : '-' + variant.buildType.name
+                outputFileName = "bagua_" + snakeVersion + "" + suffix + ".apk"
+            }
+        }
+        release {
+            minifyEnabled false
+            buildConfigField "boolean", "IS_DEBUG", "false"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "boolean", "IS_DEBUG", "true"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+    }
+}
+
+kapt {
+    generateStubs = true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+    implementation 'com.hwangjr.rxbus:rxbus:2.0.0'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxbinding2_version"
+    testImplementation 'junit:junit:4.12'
+    kapt "com.android.databinding:compiler:$gradle_version"
+}
