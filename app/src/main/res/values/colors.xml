@@ -3,4 +3,49 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!--
+        白底黑字的标准alpha值为87%(#000000)
+        二级文字使用alpha值为54%(#000000)
+        提示文字可以使用alpha值为26%(#000000)
+        分割线可以使用alpha值为12%(#000000)
+     -->
+
+    <color name="base_font_1">#DE000000</color>
+    <color name="base_font_2">#89000000</color>
+    <color name="base_font_3">#42000000</color>
+    <color name="base_font_line">#1F000000</color>
+    <color name="base_font_4">#e6e6e6</color>
+
+
+    <color name="base_trans">#00000000</color>
+    <color name="base_trans_2">#55000000</color>
+    <color name="base_blue_light">#cde1ff</color>
+    <color name="base_blue">#6ca5fd</color>
+    <color name="base_blue_deep">#0277bd</color>
+    <color name="base_pink_light">#ffcdd2</color>
+    <color name="base_pink">#ef9a9a</color>
+    <color name="base_shadow">#66000000</color>
+    <color name="base_shadow27">#42000000</color>
+    <color name="base_shadow17">#2b000000</color>
+    <color name="base_white_deep">#efeff5</color>
+    <color name="base_white">#ffffff</color>
+    <color name="base_black">#000000</color>
+    <color name="base_line">#d9d9d9</color>
+    <color name="base_line_blue">#568ee5</color>
+    <color name="base_line1">#404040</color>
+    <color name="base_sysui_shadow">#44000000</color>
+    <color name="base_yellow_light">#ffe082</color>
+    <color name="base_yellow">#ffb300</color>
+    <color name="base_yellow_deep">#f57f17</color>
+    <color name="base_green_light">#AED581</color>
+    <color name="base_green">#689f38</color>
+    <color name="base_green_deep">#388e3c</color>
+    <color name="base_teal">#009688</color>
+    <color name="base_red_light">#e53935</color>
+    <color name="base_red">#c62828</color>
+    <color name="base_red_deep">#ff1744</color>
+    <color name="base_shadow_red">#ccff1744</color>
+    <color name="base_gray_deep">#bababa</color>
+    <color name="base_gray">#cdcdcd</color>
+    <color name="base_gray_light">#e6e6e6</color>
 </resources>
