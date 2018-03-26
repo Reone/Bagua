@@ -13,5 +13,7 @@ class BaguaActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = setDataBinding(R.layout.activity_bagua)
+        binding.bagua.rotating = true
+        binding.bagua.layers.add("八卦", arrayOf("乾·天","巽·风","坎·水","艮·山","坤·地","震·雷","离·火","兑·泽"))
     }
 }
