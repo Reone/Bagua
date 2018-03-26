@@ -54,17 +54,25 @@ class BaguaView: View {
         yangPaint.style = Paint.Style.FILL
         yangPaint.isAntiAlias = true
         yangPaint.isDither = true
-        fontPaint.color = Color.YELLOW
-        framePaint.color = Color.RED
+        fontPaint.color = Color.RED
+        fontPaint.style = Paint.Style.FILL
+        fontPaint.isAntiAlias = true
+        fontPaint.isDither = true
+        framePaint.color = Color.YELLOW
+        framePaint.style = Paint.Style.FILL
+        framePaint.isAntiAlias = true
+        framePaint.isDither = true
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val layerSize = layers.data().size
         val layerWidth = layerSize * frameMaxWidth
-        for(i in layerSize - 1 .. 0){
+        //从最外层开始画
+        for(i in 0 until layerSize){
             layers.getData(i)?.let {
-                drawLayer(canvas, it, start, i%2 != 0, i)
+                //clockwise 表达式保证包括阴阳鱼每一层旋转方向不同
+                drawLayer(canvas, it, start, (layerSize - i) % 2 == 0, i)
             }
         }
         drawYinyang(canvas,layerWidth,width.toFloat()-layerWidth,layerWidth,height.toFloat() - layerWidth, start)
@@ -78,14 +86,20 @@ class BaguaView: View {
      * 每一层
      * @param start 起始角度
      * @param clockwise 选择方向是否顺时针
-     * @param index 从内向外数，此层所处位置
+     * @param index 从外到内数，此层所处位置
      */
     private fun drawLayer(canvas: Canvas, array: Array<String>, start: Float = 0f, clockwise: Boolean = true, index: Int) {
         val size = array.size
+        //圆心
+        val x = width/2f
+        val y = height/2f
+        //外层半径
+
+        //内层半径
     }
 
     /**
-     * 阴阳图
+     * 阴阳鱼
      * @param start 基准角度，x轴正方向为0
      */
     private fun drawYinyang(canvas: Canvas, l:Float, r:Float, t:Float, b:Float,start:Float = 0f) {
