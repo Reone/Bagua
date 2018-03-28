@@ -28,26 +28,44 @@ class BaguaView: View {
     private val framePaint = Paint()
     private val whitePaint = Paint()
     /**
+     * 可配置项
      * 每层环带宽度
      */
     private val frameMaxHeight = 90f
     /**
+     * 可配置项
      * 阴阳鱼最小半径
      */
     private val yinyangMinR = 20f
     /**
+     * 可配置项
      * 环带直接的间隔宽度
      */
     private val frameMargin = 12f
+
     /**
-     * 文字尺寸
+     * 绘制计算数据
+     * 层数
      */
-    private val fontSize = 40f
+    private var layerSize = 0
+    /**
+     * 绘制计算数据
+     * 每一个层的宽度
+     */
+    private var layerHeight = 0f
+    /**
+     * 绘制计算数据
+     * 阴阳鱼外所有层宽度总和
+     */
+    private var layerWidth = 0f
+    /**
+     * 绘制计算数据
+     * 文字大小
+     */
+    private var fontSize = 0f
     constructor(context: Context?) : this(context,null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs,0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
-        initPaint()
-    }
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     /**
      * 保证view为正方形
@@ -86,23 +104,28 @@ class BaguaView: View {
         whitePaint.isDither = true
     }
 
-    private var layerSize = 0
-    private var layerHeight = 0f
-    private var layerWidth = 0f
-
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
+        calculate()
+        initPaint()
+    }
+
+    /**
+     * 计算绘制所需要的数据
+     */
+    private fun calculate(){
         layerSize = layers.data().size
         layerHeight = frameMaxHeight
-        if(layerSize * layerHeight > (width - yinyangMinR * 2f)){
-            layerHeight = (width - yinyangMinR * 2f)/layerSize
+        if(layerSize * layerHeight * 2 > (width - yinyangMinR * 2)){
+            layerHeight = (width - yinyangMinR * 2) / layerSize / 2
         }
         layerWidth = layerSize * layerHeight
+        fontSize = layerHeight / 2
         LOG.d(TAG,"" +
                 "\nframeMaxHeight:$frameMaxHeight"+
                 "\nyinyangMinR:$yinyangMinR"+
-                "\nframeMargin$frameMargin"+
-                "\nfontSize$fontSize"+
+                "\nframeMargin:$frameMargin"+
+                "\nfontSize:$fontSize"+
                 "\nwidth:$width " +
                 "\nheight:$height " +
                 "\nlayerSize:$layerSize " +
@@ -121,7 +144,7 @@ class BaguaView: View {
         }
         drawYinyang(canvas,layerWidth,width.toFloat()-layerWidth,layerWidth,height.toFloat() - layerWidth, start)
         if(rotating){
-            start = (start + 1f) % 360f
+            start = (start + 0.3f) % 360f
             invalidate()
         }
     }
@@ -141,9 +164,9 @@ class BaguaView: View {
         val r1 = width / 2f - frameMargin / 2f - index * layerHeight
         //内层半径
         val r2 = width / 2f - layerHeight + frameMargin / 2f - index * layerHeight
-        //文字半径
+        //文字轨迹的半径
         val rf = ( r1 + r2 ) / 2f - fontSize / 2f
-        val fontRectf = RectF(x - rf,y - rf ,x + rf , y + rf)
+        val fontRect = RectF(x - rf,y - rf ,x + rf , y + rf)
         val frame = Path()
         frame.addCircle(x,y,r1,Path.Direction.CW)
         frame.addCircle(x,y,r2,Path.Direction.CCW)
@@ -157,7 +180,7 @@ class BaguaView: View {
                 startAngle -= start
             }
             fontPath.reset()
-            fontPath.addArc(fontRectf,startAngle,360f / size)
+            fontPath.addArc(fontRect,startAngle,360f / size)
             canvas.drawTextOnPath(array[i],fontPath,0f,0f,fontPaint)
         }
 
