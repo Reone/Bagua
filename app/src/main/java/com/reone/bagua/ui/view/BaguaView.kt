@@ -22,7 +22,21 @@ class BaguaView: View {
     companion object {
         var start = 0f
     }
+
+    /**
+     * 是否开启旋转
+     */
     var rotating = false
+
+    /**
+     * 是否都是顺时针旋转
+     */
+    var clockwise = false
+
+    /**
+     * 旋转速度是否保持一致
+     */
+    var sameSpeed = false
     val layers = Layers()
     private val yinPaint = Paint()
     private val yangPaint = Paint()
@@ -164,8 +178,10 @@ class BaguaView: View {
         //从最外层开始画
         for(i in 0 until layerSize){
             layers.getData(i)?.let {
+                val layerStart = if(sameSpeed) start else start * (1 + 0.5f * (layerSize - i)) % 360f
+                val layerClockwise = if(clockwise) true else (layerSize - i) % 2 == 0
                 //clockwise 表达式保证包括阴阳鱼每一层旋转方向不同
-                drawLayer(canvas, it, start, layerHeight,(layerSize - i) % 2 == 0, i)
+                drawLayer(canvas, it, layerStart, layerHeight,layerClockwise, i)
             }
         }
         drawYinyang(canvas,
