@@ -142,7 +142,12 @@ class BaguaView: View {
                 drawLayer(canvas, it, start, layerHeight,(layerSize - i) % 2 == 0, i)
             }
         }
-        drawYinyang(canvas,layerWidth,width.toFloat()-layerWidth,layerWidth,height.toFloat() - layerWidth, start)
+        drawYinyang(canvas,
+                layerWidth + frameMargin / 2f,
+                width.toFloat() - layerWidth - frameMargin / 2f,
+                layerWidth + frameMargin / 2f,
+                height.toFloat() - layerWidth - frameMargin / 2f,
+                start)
         if(rotating){
             start = (start + 0.3f) % 360f
             invalidate()
@@ -165,7 +170,7 @@ class BaguaView: View {
         //内层半径
         val r2 = width / 2f - layerHeight + frameMargin / 2f - index * layerHeight
         //文字轨迹的半径
-        val rf = ( r1 + r2 ) / 2f - fontSize / 2f
+        val rf = ( r1 + r2 ) / 2f + fontSize / 2f
         val fontRect = RectF(x - rf,y - rf ,x + rf , y + rf)
         val frame = Path()
         frame.addCircle(x,y,r1,Path.Direction.CW)
@@ -173,14 +178,14 @@ class BaguaView: View {
         canvas.drawPath(frame,framePaint)
         val fontPath = Path()
         for (i in 0 until size){
-            var startAngle = 360f / size * i - 90f - 360f / size / 2f
+            var startAngle = 360f / size * i - 90f + 360f / size / 2f
             if(clockwise){
                 startAngle += start
             }else{
                 startAngle -= start
             }
             fontPath.reset()
-            fontPath.addArc(fontRect,startAngle,360f / size)
+            fontPath.addArc(fontRect,startAngle,-360f / size)
             canvas.drawTextOnPath(array[i],fontPath,0f,0f,fontPaint)
         }
 
