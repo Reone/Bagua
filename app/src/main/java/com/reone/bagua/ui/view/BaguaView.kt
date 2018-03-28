@@ -10,6 +10,8 @@ import kotlin.collections.ArrayList
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
+import com.reone.bagua.R
+
 
 /**
  * Created by wangxingsheng on 2018/3/26.
@@ -26,23 +28,41 @@ class BaguaView: View {
     private val yangPaint = Paint()
     private val fontPaint = Paint()
     private val framePaint = Paint()
-    private val whitePaint = Paint()
     /**
      * 可配置项
      * 每层环带宽度
      */
-    private val frameMaxHeight = 90f
+    private var frameMaxHeight = 90f
     /**
      * 可配置项
      * 阴阳鱼最小半径
      */
-    private val yinyangMinR = 20f
+    private var yinyangMinR = 20f
     /**
      * 可配置项
      * 环带直接的间隔宽度
      */
-    private val frameMargin = 6f
-
+    private var frameMargin = 6f
+    /**
+     * 可配置项
+     * 阴鱼颜色
+     */
+    private var colorYin = Color.BLACK
+    /**
+     * 可配置项
+     * 阳鱼颜色
+     */
+    private var colorYang = Color.WHITE
+    /**
+     * 可配置项
+     * 层文字颜色
+     */
+    private var colorFont = Color.BLACK
+    /**
+     * 可配置项
+     * 层底色
+     */
+    private var colorFrame = Color.WHITE
     /**
      * 绘制计算数据
      * 层数
@@ -63,9 +83,19 @@ class BaguaView: View {
      * 文字大小
      */
     private var fontSize = 0f
-    constructor(context: Context?) : this(context,null)
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs,0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : this(context,null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs,0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
+        val a = context.theme.obtainStyledAttributes(attrs, R.styleable.BaguaView, defStyleAttr, 0) ?: return
+        frameMaxHeight = a.getDimension(R.styleable.BaguaView_frameMaxHeight,frameMaxHeight)
+        yinyangMinR = a.getDimension(R.styleable.BaguaView_yinyangMinR,yinyangMinR)
+        frameMargin = a.getDimension(R.styleable.BaguaView_frameMargin,frameMargin)
+        colorYin = a.getColor(R.styleable.BaguaView_colorYin,colorYin)
+        colorYang= a.getColor(R.styleable.BaguaView_colorYang,colorYang)
+        colorFont = a.getColor(R.styleable.BaguaView_colorFont,colorFont)
+        colorFrame = a.getColor(R.styleable.BaguaView_colorFrame,colorFrame)
+        a.recycle()
+    }
 
     /**
      * 保证view为正方形
@@ -80,28 +110,24 @@ class BaguaView: View {
      * 初始阴阳画笔
      */
     private fun initPaint() {
-        yinPaint.color = Color.BLACK
+        yinPaint.color = colorYin
         yinPaint.style = Paint.Style.FILL
         yinPaint.isAntiAlias = true
         yinPaint.isDither = true
-        yangPaint.color = Color.WHITE
+        yangPaint.color = colorYang
         yangPaint.style = Paint.Style.FILL
         yangPaint.isAntiAlias = true
         yangPaint.isDither = true
-        fontPaint.color = Color.BLACK
+        fontPaint.color = colorFont
         fontPaint.style = Paint.Style.STROKE
         fontPaint.isAntiAlias = true
         fontPaint.isDither = true
         fontPaint.textSize = fontSize
         fontPaint.textAlign = Paint.Align.CENTER
-        framePaint.color = Color.WHITE
+        framePaint.color = colorFrame
         framePaint.style = Paint.Style.FILL
         framePaint.isAntiAlias = true
         framePaint.isDither = true
-        whitePaint.color = Color.WHITE
-        whitePaint.style = Paint.Style.FILL
-        whitePaint.isAntiAlias = true
-        whitePaint.isDither = true
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

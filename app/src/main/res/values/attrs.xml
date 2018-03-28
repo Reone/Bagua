@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BaguaView">
+        <attr name="frameMaxHeight" format="dimension"/>
+        <attr name="yinyangMinR" format="dimension"/>
+        <attr name="frameMargin" format="dimension"/>
+        <attr name="colorYin" format="color"/>
+        <attr name="colorYang" format="color"/>
+        <attr name="colorFont" format="color"/>
+        <attr name="colorFrame" format="color"/>
+    </declare-styleable>
+</resources>
