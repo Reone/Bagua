@@ -14,6 +14,9 @@ class BaguaActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = setDataBinding(R.layout.activity_bagua)
         binding.bagua.rotating = true
-        binding.bagua.layers.add("八卦", arrayOf("乾·天","巽·风","坎·水","艮·山","坤·地","震·雷","离·火","兑·泽"))
+        binding.bagua.layers.add("天干", arrayOf("甲","乙","丙","丁","午","己","庚","辛","壬","癸"))
+        binding.bagua.layers.add("地支", arrayOf("子","丑","寅","卯","辰","巳","无","为","申","酉","戌","亥"))
+        binding.bagua.layers.add("八卦", arrayOf("乾","巽","坎","艮","坤","震","离","兑"))
+        binding.bagua.layers.add("五行", arrayOf("金","木","水","火","土"))
     }
 }

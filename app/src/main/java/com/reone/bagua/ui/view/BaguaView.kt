@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import com.reone.bagua.core.util.LOG
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.cos
@@ -25,8 +26,23 @@ class BaguaView: View {
     private val yangPaint = Paint()
     private val fontPaint = Paint()
     private val framePaint = Paint()
-    private val frameMaxWidth = 40f
-    private val frameMargin = 4f
+    private val whitePaint = Paint()
+    /**
+     * 每层环带宽度
+     */
+    private val frameMaxHeight = 90f
+    /**
+     * 阴阳鱼最小半径
+     */
+    private val yinyangMinR = 20f
+    /**
+     * 环带直接的间隔宽度
+     */
+    private val frameMargin = 12f
+    /**
+     * 文字尺寸
+     */
+    private val fontSize = 40f
     constructor(context: Context?) : this(context,null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs,0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
@@ -54,30 +70,58 @@ class BaguaView: View {
         yangPaint.style = Paint.Style.FILL
         yangPaint.isAntiAlias = true
         yangPaint.isDither = true
-        fontPaint.color = Color.RED
-        fontPaint.style = Paint.Style.FILL
+        fontPaint.color = Color.BLACK
+        fontPaint.style = Paint.Style.STROKE
         fontPaint.isAntiAlias = true
         fontPaint.isDither = true
-        framePaint.color = Color.YELLOW
+        fontPaint.textSize = fontSize
+        fontPaint.textAlign = Paint.Align.CENTER
+        framePaint.color = Color.WHITE
         framePaint.style = Paint.Style.FILL
         framePaint.isAntiAlias = true
         framePaint.isDither = true
+        whitePaint.color = Color.WHITE
+        whitePaint.style = Paint.Style.FILL
+        whitePaint.isAntiAlias = true
+        whitePaint.isDither = true
+    }
+
+    private var layerSize = 0
+    private var layerHeight = 0f
+    private var layerWidth = 0f
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        layerSize = layers.data().size
+        layerHeight = frameMaxHeight
+        if(layerSize * layerHeight > (width - yinyangMinR * 2f)){
+            layerHeight = (width - yinyangMinR * 2f)/layerSize
+        }
+        layerWidth = layerSize * layerHeight
+        LOG.d(TAG,"" +
+                "\nframeMaxHeight:$frameMaxHeight"+
+                "\nyinyangMinR:$yinyangMinR"+
+                "\nframeMargin$frameMargin"+
+                "\nfontSize$fontSize"+
+                "\nwidth:$width " +
+                "\nheight:$height " +
+                "\nlayerSize:$layerSize " +
+                "\nlayerHeight:$layerHeight " +
+                "\nlayerWidth:$layerWidth")
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val layerSize = layers.data().size
-        val layerWidth = layerSize * frameMaxWidth
         //从最外层开始画
         for(i in 0 until layerSize){
             layers.getData(i)?.let {
                 //clockwise 表达式保证包括阴阳鱼每一层旋转方向不同
-                drawLayer(canvas, it, start, (layerSize - i) % 2 == 0, i)
+                drawLayer(canvas, it, start, layerHeight,(layerSize - i) % 2 == 0, i)
             }
         }
         drawYinyang(canvas,layerWidth,width.toFloat()-layerWidth,layerWidth,height.toFloat() - layerWidth, start)
         if(rotating){
-            start = (start + 1f)%360f
+            start = (start + 1f) % 360f
             invalidate()
         }
     }
@@ -88,14 +132,36 @@ class BaguaView: View {
      * @param clockwise 选择方向是否顺时针
      * @param index 从外到内数，此层所处位置
      */
-    private fun drawLayer(canvas: Canvas, array: Array<String>, start: Float = 0f, clockwise: Boolean = true, index: Int) {
+    private fun drawLayer(canvas: Canvas, array: Array<String>, start: Float = 0f, layerHeight:Float,clockwise: Boolean = true, index: Int) {
         val size = array.size
         //圆心
-        val x = width/2f
-        val y = height/2f
+        val x = width / 2f
+        val y = height / 2f
         //外层半径
-
+        val r1 = width / 2f - frameMargin / 2f - index * layerHeight
         //内层半径
+        val r2 = width / 2f - layerHeight + frameMargin / 2f - index * layerHeight
+        //文字半径
+        val rf = ( r1 + r2 ) / 2f - fontSize / 2f
+        val fontRectf = RectF(x - rf,y - rf ,x + rf , y + rf)
+        val frame = Path()
+        frame.addCircle(x,y,r1,Path.Direction.CW)
+        frame.addCircle(x,y,r2,Path.Direction.CCW)
+        canvas.drawPath(frame,framePaint)
+        val fontPath = Path()
+        for (i in 0 until size){
+            var startAngle = 360f / size * i - 90f - 360f / size / 2f
+            if(clockwise){
+                startAngle += start
+            }else{
+                startAngle -= start
+            }
+            fontPath.reset()
+            fontPath.addArc(fontRectf,startAngle,360f / size)
+            canvas.drawTextOnPath(array[i],fontPath,0f,0f,fontPaint)
+        }
+
+
     }
 
     /**
@@ -138,7 +204,7 @@ class BaguaView: View {
          */
         fun data(): List<Array<String>> {
             val data = ArrayList<Array<String>>()
-            for (name in layerKey){
+            for (name in names()){
                 getData(name)?.let {
                     data.add(it)
                 }
@@ -168,7 +234,7 @@ class BaguaView: View {
          */
         fun add(name:String,data:Array<String>){
             if(!layerData.containsKey(name) && !layerKey.contains(name)){
-                layerKey.add(name)
+                layerKey.add(0,name)
             }
             layerData[name] = data
         }
