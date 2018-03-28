@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <data>
-
-    </data>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:background="@color/base_gray_light"
@@ -11,9 +8,11 @@
         android:layout_height="match_parent">
         <com.reone.bagua.ui.view.BaguaView
             android:id="@+id/bagua"
-            android:background="@color/base_yellow_deep"
-            android:layout_width="240dp"
+            app:yinyangMinR="60dp"
+            app:frameMargin="1dp"
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
             android:layout_gravity="center"
-            android:layout_height="240dp" />
+            android:layout_height="match_parent" />
     </FrameLayout>
 </layout>
