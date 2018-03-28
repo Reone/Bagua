@@ -41,7 +41,7 @@ class BaguaView: View {
      * 可配置项
      * 环带直接的间隔宽度
      */
-    private val frameMargin = 12f
+    private val frameMargin = 6f
 
     /**
      * 绘制计算数据
@@ -170,7 +170,7 @@ class BaguaView: View {
         //内层半径
         val r2 = width / 2f - layerHeight + frameMargin / 2f - index * layerHeight
         //文字轨迹的半径
-        val rf = ( r1 + r2 ) / 2f + fontSize / 2f
+        val rf = ( r1 + r2 ) / 2f - fontSize / 3f
         val fontRect = RectF(x - rf,y - rf ,x + rf , y + rf)
         val frame = Path()
         frame.addCircle(x,y,r1,Path.Direction.CW)
@@ -178,14 +178,14 @@ class BaguaView: View {
         canvas.drawPath(frame,framePaint)
         val fontPath = Path()
         for (i in 0 until size){
-            var startAngle = 360f / size * i - 90f + 360f / size / 2f
+            var startAngle = 360f / size * i - 90f - 360f / size / 2f
             if(clockwise){
                 startAngle += start
             }else{
                 startAngle -= start
             }
             fontPath.reset()
-            fontPath.addArc(fontRect,startAngle,-360f / size)
+            fontPath.addArc(fontRect,startAngle,360f / size)
             canvas.drawTextOnPath(array[i],fontPath,0f,0f,fontPaint)
         }
 
