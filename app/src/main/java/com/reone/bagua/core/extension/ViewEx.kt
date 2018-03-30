@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit
  */
 fun View.rxClickFirst(listener:()->Unit){
     RxView.clicks(this)
-            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 listener()
             }
